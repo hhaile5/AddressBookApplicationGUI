@@ -1,0 +1,12 @@
+    Abe,    Lincoln, Green Ave, Chicago, Illinois, 10020, 8001234567, aLin@dead.gov
+    Jin,    Loa,    Black St, Springfield, Ohio, 12322, 5551234567, JinG@school.gov
+    Him,    Linm,   Black St, Springfield, Washington, 12322, 1234567, himL@green.com
+    Loma,   Linda,  Poka Rd, Dublin, Ca, 12322, 1234567, aLom@dublin.gov
+    Green,  Day,    Green Ave, Springfield, MA, 30030, 8001234567, wqs@gmail.com
+    Pinny,  Loam,   Mohr St, Livermore, Ohio, 94567, 5551234567, PinG@school.gov
+    Zard,   Lemmy,  Hatch Act, Rico, D.C., 90212, 6681234567, Tref@mean.edu
+    Space,  Zenon,  Ship Rd, Mars, OK, 56745, 5551234567, ZenonZ@mars.gov
+    Weema,  Daywsd, Skool Ave, Springtown, Mississippi, 00001, 8001234567, weema@gmail.com
+    Binny,  Moam,   Tohr Rd, Livermore, Ohio, 94567, 5551234567, poled@school.gov
+    Mard,   Kemmy,  Hegg St, Mico, Maine, 20212, 6681234567, kemmyM@yahoo.com
+    Loop,   Words,  Klomp dr, Helena, Montana, 78453, 5551234567, loop@hotmail.com
