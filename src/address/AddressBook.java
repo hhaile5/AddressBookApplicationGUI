@@ -10,9 +10,9 @@ import java.util.Scanner;
 
 /**
  *
- * @author Helen Haile
+ * @author Group 7
  * @version 1.0
- * @since  February 2021
+ * @since  March 2021
  *
  * purpose: This class is used to represent an address book containing address entries.
  *  It has an ArrayList addressEntryList that contains all the entries.

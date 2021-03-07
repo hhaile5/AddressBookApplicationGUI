@@ -2,9 +2,9 @@ package address.data;
 
 /**
  *
- * @author Helen Haile
+ * @author Group 7
  * @version 1.0
- * @since  February 2021
+ * @since  March 2021
  *
  * purpose: This class is used to represent an entry in an address list.
  * Allow operation toString() to format address entry as a string.
@@ -21,11 +21,13 @@ public class AddressEntry {
 
     /**
      * Instance of Name
+     *  contains firstName and LastName
      */
     Name name;
 
     /**
      * Instance of address
+     *  contains street, city, state, zipcode
      */
     Address address;
 
@@ -45,7 +47,7 @@ public class AddressEntry {
 
     /**
      * Returns a new address.AddressEntry initalized to nothing.
-     *   * @return A new address.AddressEntry object initialized to nothing.
+     *
      */
     public AddressEntry(){
         ID = 0;
@@ -74,7 +76,18 @@ public class AddressEntry {
         email = e;
     }
 
-
+    /**
+     * Returns a new address.AddressEntry initalized to parameter values.
+     * @param id is the ID of the entry.
+     * @param fName is the first name for the name instance.
+     * @param lName is the last name for the name instance.
+     * @param str is the street for the address instance.
+     * @param c is the city for the address instance.
+     * @param stte is the state for the address instance.
+     * @param z is the zipcode for the address instance.
+     * @param p is the phone number.
+     * @param e is the email address.
+     */
     public AddressEntry(int id, String fName, String lName, String str, String c,
                         String stte, int z, String p, String e){
         ID = id;
@@ -91,7 +104,6 @@ public class AddressEntry {
     }
 
 
-    //PRINT ENTRY INFORMATION
 
     /**
      * Returns a formatted string of an address.AddressEntry objects information.
@@ -99,20 +111,29 @@ public class AddressEntry {
      */
 	public String toString() {
 		String entryInfo = " " +
-                "ID |" + this.ID + "     " +
-                " |      First Name: " + this.name.getFirstName() + "     " +
-                " |      Last Name : " + this.name.getLastName()+ "     " +
-                " |      Street: " + this.address.getStreet() + "     " +
-                " |      City: " + this.address.getCity() + "     " +
-                " |      State: " + this.address.getState()  + "     " +
-                " |      Zip: " + this.address.getZip()  + "     " +
-                " |      Phone: " + this.phone + "     " +
-                " |      Email: " + this.email;
+                "ID  :   " + this.ID + "     " +
+                " |     First Name: " + this.name.getFirstName() + "     " +
+                " |     Last Name : " + this.name.getLastName()+ "     " +
+                " |     Street: " + this.address.getStreet() + "     " +
+                " |     City: " + this.address.getCity() + "     " +
+                " |     State: " + this.address.getState()  + "     " +
+                " |     Zip: " + this.address.getZip()  + "     " +
+                " |     Phone: " + this.phone + "     " +
+                " |     Email: " + this.email;
 
 		return entryInfo;
 	}
 
 //SETTERS
+
+    /**
+     * Takes an int and set's it to an address.AddressEntry object's ID.
+     * @param i
+     */
+    public void setID(int i)
+    {
+        this.ID = i;
+    }
 
     /**
      * Takes a String and set's it to an address.AddressEntry object's first name.
@@ -187,27 +208,32 @@ public class AddressEntry {
 
 
 //GETTERS
-
+    /**
+     * Returns name object.
+     * @return address.AddressEntry object's name object.
+     */
     public Name getName(){
         return this.name;
     }
 
+    /**
+     * Returns address object.
+     * @return address.AddressEntry object's address object.
+     */
     Address getAddress(){
         return this.address;
     }
-//    String getAddress(){
-//        return name.getFirstName() + " " + name.getLastName();
-//    }
 
-
+    /**
+     * Returns int ID for address entry object.
+     * @return address.AddressEntry object's ID.
+     */
     public int getID()
     {
         return this.ID;
     }
-    public void setID(int i)
-    {
-        this.ID = i;
-    }
+
+
     /**
      * Returns an address.AddressEntry object's first name.
      * @return address.AddressEntry object's first name

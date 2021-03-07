@@ -12,11 +12,11 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- *   @author Helen Haile
+ *   @author Group 7
  *   @version 1.0
- *   @since  February 24 2021
- * AddressBookApplication uses AddressBook and Menu to implement program.
- * Displays menu and user prompts to create and operate address book.
+ *   @since  March 2021
+ *
+ *   Purpose:
  *
  */
 public class AddressBookApplication {
