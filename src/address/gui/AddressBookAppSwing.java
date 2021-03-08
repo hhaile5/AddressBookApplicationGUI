@@ -124,6 +124,7 @@ public class AddressBookAppSwing extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 listEntries.clearSelection();
 
+
 //        scroll.setViewportView(listEntries);
 
 //

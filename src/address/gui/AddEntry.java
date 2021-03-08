@@ -113,6 +113,7 @@ public class AddEntry extends JFrame {
                                             city, state, zip, phone, email);
 
                 AddressBookAppSwing.book1.addressEntryList.add(newEntry);
+                AddressBookAppSwing.book1.sortEntries();
                 AddressBookAppSwing.addressEntryListModel.removeAllElements();
                 AddressBookAppSwing.addressEntryListModel.addAll(AddressBookAppSwing.book1.addressEntryList);
                 AddressBookAppSwing.book1.list();

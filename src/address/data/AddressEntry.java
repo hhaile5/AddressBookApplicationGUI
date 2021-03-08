@@ -220,7 +220,7 @@ public class AddressEntry {
      * Returns address object.
      * @return address.AddressEntry object's address object.
      */
-    Address getAddress(){
+    public Address getAddress(){
         return this.address;
     }
 
@@ -283,7 +283,7 @@ public class AddressEntry {
      * Returns an address.AddressEntry object's phone number.
      * @return address.AddressEntry object's phone number as string.
      */
-    String getPhone()
+    public String getPhone()
     {
         return phone;
     }
@@ -301,7 +301,7 @@ public class AddressEntry {
      * Returns an address.AddressEntry object's email address.
      * @return address.AddressEntry object's email address.
      */
-    String getEmail()
+    public String getEmail()
     {
         return email;
     }

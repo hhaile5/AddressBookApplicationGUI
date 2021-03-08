@@ -48,12 +48,12 @@ public class AddressBook {
 
         //counter to list number of entries
         int x = 0;
-
+//        sortEntries();
         //Print every item in addressEntryList
-        for(int i=0; i < addressEntryList.size(); i++){
+        for(int i=0; i < this.addressEntryList.size(); i++){
             x = i+1;
             System.out.println("\nEntry #" + x);
-            System.out.println(addressEntryList.get(i).toString());
+            System.out.println(this.addressEntryList.get(i).toString());
         }
     }
 
@@ -67,32 +67,28 @@ public class AddressBook {
         int tempIndex;
 
         //For every entry in list check if ordered alphabetically
-        for(int i=0; i < addressEntryList.size(); i++){
+        for(int i=0; i < this.addressEntryList.size(); i++){
 
             //Check entry next to i
-            for (int j = i + 1; j < addressEntryList.size(); j++) {
+            for (int j = i + 1; j < this.addressEntryList.size(); j++) {
                 //If entry next to i is not sorted alphabetically
                 //swap entries at index i and j
-                if (addressEntryList.get(i).getName().getLastName().toLowerCase().compareTo(addressEntryList.get(j).getName().getLastName().toLowerCase())>0)
+                if (this.addressEntryList.get(i).getName().getLastName().toLowerCase().compareTo(this.addressEntryList.get(j).getName().getLastName().toLowerCase())>0)
                 {
-                    //swap entries at i and j
-                    temp = addressEntryList.get(i);
-//                    tempIndex = i;
-                    addressEntryList.set(i, addressEntryList.get(j));
+                    temp = this.addressEntryList.get(i);
+//                    System.out.println(temp.toString());
+                    this.addressEntryList.set(i, this.addressEntryList.get(j));
 //                    addressEntryList.get(i).setID(j);
-                    addressEntryList.set(j, temp);
-//                    addressEntryList.get(j).setID(tempIndex);
-
-//                    addressEntryList.get(i).setID(j);
-//                    addressEntryList.get(j).setID(i);
+                    this.addressEntryList.set(j, temp);
 
 
                 }
             }
         }
 
-        for(int i=0; i < addressEntryList.size(); i++) {
-            addressEntryList.get(i).setID(i+1);
+        for(int i=0; i < this.addressEntryList.size(); i++) {
+            this.addressEntryList.get(i).setID(i+1);
+//            System.out.println(this.addressEntryList.get(i).toString());
         }
     }
 
@@ -155,6 +151,7 @@ public class AddressBook {
         //add new addressEntry object to addressEntryList
         newEntry.setID(addressEntryList.size()+1);
         addressEntryList.add(newEntry);
+        sortEntries();
     }
 
 //READ FROM FILE START
@@ -181,7 +178,7 @@ public class AddressBook {
 
                 //Create new AddressEntry with line read from file
                 AddressEntry newEntry = new AddressEntry(addressEntryList.size()+1,entry[0],
-                        entry[1], entry[2], entry[3], entry[4],
+                        entry[1].replaceAll(" ", ""), entry[2], entry[3], entry[4],
                         Integer.parseInt(entry[5]), entry[6], entry[7]);
 
                 //Add entry to addressEntryList

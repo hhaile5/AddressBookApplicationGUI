@@ -47,7 +47,7 @@ public class Name {
      * @return address.Name object's first name.
      */
     public String getFirstName() {
-        return firstName;
+        return this.firstName;
     }
 
     /**
@@ -55,7 +55,7 @@ public class Name {
      * @return address.Name object's last name.
      */
     public String getLastName() {
-        return lastName;
+        return this.lastName;
     }
 
     /**
