@@ -11,10 +11,9 @@ import java.io.IOException;
 import java.sql.*;
 
 public class DataBaseConnect {
-    public String userName = "";
-    public String password = "";
 
     /**
+     *
      * @param args
      */
     public static void main(String[] args) throws SQLException, ClassNotFoundException{
@@ -80,10 +79,20 @@ public class DataBaseConnect {
 
     }
 
+    /**
+     * Read input file and return data as a String array
+     * @param filename name of file to read as a String
+     * @return login[] array
+     */
     public static String[] readLogin(String filename){
         //AddressBook adBook = new AddressBook();
         //try catch if filename not found
+        /**
+         * String array login
+         */
         String [] login = new String[]{};
+
+        //try catch file input
         try {
             //Create new BufferedReader for filename
             BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -95,24 +104,12 @@ public class DataBaseConnect {
             while (line != null) {
                 //Store line to a String data
                 String data = line;
+
                 //Store the line in an array (entry)
                 //split by comma
                 login = data.split(",");
-//                System.out.println(login[0]);
-//                System.out.println(login[1]);
-
-
-
-
-//                return login;
                 line = br.readLine();
             }
-//            u = login[0];
-//            p = login[1];
-
-
-
-
             //Close file
             br.close();
 
@@ -125,13 +122,8 @@ public class DataBaseConnect {
             System.out.println("Can't read from file: " + filename);
         }
 
-    return login;
+        //Return String array login[]
+        return login;
     }
 
-    public void setUser(String p){
-        this.userName = p;
-    }
-    public void setPass(String p){
-        this.password = p;
-    }
 }

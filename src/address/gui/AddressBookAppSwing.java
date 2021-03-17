@@ -1,7 +1,9 @@
 package address.gui;
 
 import address.AddressBook;
+import address.data.Address;
 import address.data.AddressEntry;
+import address.data.Name;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -9,94 +11,133 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.*;
 
+/**
+ * AddressBookAppSwing
+ * Purpose: Creates the main frame for AddressBookApplicationGUI
+ * Displays three buttons and a Jlist containing selectable address entries.
+ * The address entries are sorted alphabetically by last name
+ */
 public class AddressBookAppSwing extends JFrame {
-
+    /**
+     * JPanel PanelMain creates new JPanel
+     */
     public JPanel PanelMain = new JPanel();
 
     //BUTTONS
+    /**
+     * JButton displayButton displays entries
+     */
     private JButton displayButton = new JButton();
+    /**
+     * JButton newButton opens new frame that allows user to enter a new entry
+     */
     private JButton newButton = new JButton();
+    /**
+     * JButton removeButton is disabled until the user selects an entry
+     * removes an entry selected by the user in the JList
+     */
     private JButton removeButton = new JButton();
 
     //JList
+    /**
+     * JList listEntries to hold the entries in a selectable list
+     */
      JList listEntries;
+     /**
+      * defaultListModel addressEntryListModel to transfer entries from arrayList to JList ListEntries
+      */
      static DefaultListModel addressEntryListModel;
 
-
+    /**
+     * AddressBook book1 creates an AddressBook object to hold all entries in addressEntryList
+     */
     static AddressBook book1 = new AddressBook();
 
+    /**
+     * JScrollPane scroll create scrollpane for JList
+     */
     JScrollPane scroll;
 
-
-
-
-
+    /**
+     * Purpose: Creates a frame with a scrollable JList and three buttons: display, remove, and new
+     */
     public AddressBookAppSwing(){
-        book1.readFromFile("src/testEntry2.txt");
+        //book1.readFromFile("src/testEntry2.txt");
+
+        //Read entries from database and save in book1 addressEntryList
+        book1.readDataBase();
         book1.sortEntries();
-        book1.list();
-
-//CREATE ENTRY WITH CONSTRUCTOR
-//        AddressEntry entry1 = new AddressEntry();
-//        entry1.setID(0);
-//        entry1.setFirstName("Abe");
-//        entry1.setLastName("Lemon");
-//        entry1.setCity("Dublin");
-//        entry1.setPhone("999-888-1234");
-//        entry1.setStreet("Green Rd");
-//        entry1.setState("Oklahoma");
-//        entry1.setZip(90210);
-//        entry1.setEmail("abeL@gmail.com");
-//        book1.addressEntryList.add(entry1);
+//        book1.list();
 
 
+        //Initialize addressEntryListModel to new DefaultListModel()
         this.addressEntryListModel = new DefaultListModel();
-        String entry="";
 
+        //Add all entries in addressEntryList to addressEntryListModel
         for(int i=0; i < book1.addressEntryList.size(); i++){
             this.addressEntryListModel.add(i, this.book1.addressEntryList.get(i));
         }
 
-//        addressEntryListModel.getElementAt(0).
+        //Add addressEntryListModel elements to JList listEntries
         this.listEntries = new JList<AddressEntry>(this.addressEntryListModel);
 
-
+        //Set selection mode to single selection
         this.listEntries.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
 //        this.listEntries.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 //        listEntries.setFont( new Font("monospaced", Font.PLAIN, 10) );
 //        this.listEntries.setFixedCellWidth(100);
 
-        this.listEntries.setVisibleRowCount(-1);
+//        this.listEntries.setVisibleRowCount(-1);
 //        this.listEntries.setFixedCellWidth(50);
+
+        //Create scrollpane scroll from listEntries
+//        scroll = new JScrollPane(listEntries);
 
         scroll = new JScrollPane(listEntries);
 //        scroll.setViewportView(listEntries);
+
+        //Set listEntries to horizontal_wrap for display
         listEntries.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-//        listEntries.setSelectionBackground(Color c);
+        listEntries.setSelectionBackground(Color.pink);
 
 //        PanelMain.add(scroll);
 
-        GroupLayout layout = new GroupLayout(PanelMain);
+        //
+//        GroupLayout layout = new GroupLayout(PanelMain);
 
-
-
-
-
+        //Set display button text to DISPLAY
         displayButton.setText("DISPLAY");
+
+        //Set new button text to NEW
         newButton.setText("NEW");
+
+        //Set remove button text to REMOVE
         removeButton.setText("REMOVE");
+
+        //Set remove button to disabled
         removeButton.setEnabled(false);
 
 
 //        scroll.getViewport().setPreferredSize(new Dimension(512,448));
+
+        //Set vertical and horizontal scrollbars in scrollpane scroll
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+
 //        scroll.setPreferredSize(new Dimension(1200, 300));
 //        scroll.updateUI();
 
+        //Enable scroll
         scroll.setEnabled(true);
+        //Allow scrolling with mouse wheel
         scroll.setWheelScrollingEnabled(true);
 //        scroll.pack();
 
@@ -105,24 +146,35 @@ public class AddressBookAppSwing extends JFrame {
 
 
 
-//        scroll.add(displayButton);
-//        scroll.add(newButton);
-//        scroll.add(removeButton);
+        JLabel title = new JLabel("ADDRESS BOOK APP");
+
+        PanelMain.add(title, BorderLayout.PAGE_START);
+        //Add scroll to PanelMain
         PanelMain.add(scroll, BorderLayout.CENTER);
+
+        //Add display button to PanelMain
         PanelMain.add(displayButton);
+
+        //Add new button to PanelMain
         PanelMain.add(newButton);
+
+        //Add remove button to PanelMain
         PanelMain.add(removeButton);
 
 
-
-//        PanelMain.add(listScrollPane, BorderLayout.CENTER);
-
-
-
+        /**
+         * Event listener for display button.
+         * When clicked show the updated list
+         *
+         */
         displayButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 listEntries.clearSelection();
+//                PanelMain.remove(scroll);
+//                scroll = new JScrollPane(listEntries);
+//                PanelMain.add(scroll);
+
 
 
 //        scroll.setViewportView(listEntries);
@@ -151,12 +203,23 @@ public class AddressBookAppSwing extends JFrame {
 
             }
         });
+
+        /**
+         * New button action listener
+         * Opens a new frame for user to fill out address entry form.
+         * Adds the new entry to JList listEntries and AddressBook object book1's addressEntryList.
+         */
         newButton.addActionListener(new ActionListener() {
+            /**
+             * When newButton is clicked
+             * Creates and displays a new frame from AddEntry GUI class
+             * @param e
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
-//                JPanel panel = new JPanel();
+
+                //Create JFrame frame with the title AddEntry
                 JFrame frame = new JFrame("AddEntry");
-//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
                 //Create and set up the content pane.
                 frame.setContentPane(new AddEntry().panel);
@@ -168,37 +231,52 @@ public class AddressBookAppSwing extends JFrame {
             }
         });
 
+        /**
+         * Remove button action listener
+         * Removes an address entry
+         * Updates JList listEntries and AddressBook object book1's addressEntryList
+         */
         removeButton.addActionListener(new ActionListener() {
+            /**
+             * Remove a selected entry if JList element selected
+             * @param arg0
+             */
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                removeButton.setEnabled(true);
+
+                // Get the index of the select JList entry
                 int index = listEntries.getSelectedIndex();
 
-                if(index != -1)//something is selected otherwise do nothing
+                //If entry is selected
+                if(index != -1)
 
                 {   //retrieve the DeffaultListModel associated
-                    // with our JList and remove from it the AddressEntry at this index
-//                    int removeIndex = listEntries.getSelectedIndex();
+                    // JList listEntries and remove from it the AddressEntry at this index
                     ((DefaultListModel<AddressEntry>) (listEntries.getModel())).remove(index);
-
+                    String n = book1.addressEntryList.get(index).getName().getFirstName() + " " +
+                            book1.addressEntryList.get(index).getName().getLastName();
                     //Remove from addressEntryList
                     book1.addressEntryList.remove(index);
-                    book1.list();
+                    book1.removeDataBase(n);
+
+                    //Update the index of the entries after the entry is removed
                     for(int i=index; i < book1.addressEntryList.size(); i++) {
                         book1.addressEntryList.get(i).setID(i+1);
                     }
-                    // NOTE in your project 2 you will also remove it from your AddressBook.addressEntryList
-                    // AND ALSO remove it from the associated database table
 
-                }
-                else{
-//                    removeButton.setEnabled(false);
                 }
             }
         });
+        /**
+         * Check if an entry in JList listEntries is selected
+         */
         listEntries.addListSelectionListener(new ListSelectionListener() {
+            /**
+             * Calls the checkSelection() method if value changes in listEntries JList
+             * @param e listSelectionEvent for JList listEntries
+             */
             public void valueChanged(ListSelectionEvent e) {
-//                removeButton.setEnabled(true);//Enable here
+                //Call checkSelection to check if an entry is selected by the user
                 checkSelection();
             }
         });
@@ -208,17 +286,9 @@ public class AddressBookAppSwing extends JFrame {
 
 
     /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
+     * Create the GUI and show it.
      */
     private static void createAndShowGUI() {
-
-//        JFrame frame = new JFrame("AddressBookAppSwing");
-//        frame.setContentPane(new AddressBookAppSwing().PanelMain);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-//        frame.setVisible(true);
 
 
         //Create and set up the window.
@@ -228,20 +298,16 @@ public class AddressBookAppSwing extends JFrame {
         //Create and set up the content pane.
         frame.setContentPane(new AddressBookAppSwing().PanelMain);
 
-
-
-
-//        JComponent newContentPane = new JComponent() {
-//        };
-//        newContentPane.setOpaque(true); //content panes must be opaque
-//        frame.setContentPane(newContentPane);
-
         //Display the window.
         frame.pack();
-//        frame.setSize(1000,600);
+        //frame.setSize(1000,600);
         frame.setVisible(true);
     }
 
+    /**
+     * Main calls the createAndShowGUI() method to create and display the frame
+     * @param args
+     */
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
@@ -252,17 +318,23 @@ public class AddressBookAppSwing extends JFrame {
         });
     }
 
+    /**
+     * Check if the Jlist listEntries has an entry selected
+     * to enable or disable removeButton
+     */
     public void checkSelection() {
+        //If not selected
         if (listEntries.isSelectionEmpty() )
         {
+            // then removeButton is disabled
             removeButton.setEnabled(false);
         }
+        //Jlist entry selected
         else{
+            //Enable remove button
             removeButton.setEnabled(true);
         }
     }
-
-
 
 }
 

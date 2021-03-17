@@ -247,7 +247,7 @@ public class AddressEntry {
      * Returns an address.AddressEntry object's last name.
      * @return address.AddressEntry object's last name
      */
-    String getLastName()
+    public String getLastName()
     {
         return name.getLastName();
     }
@@ -256,7 +256,7 @@ public class AddressEntry {
      * Returns an address.AddressEntry object's city.
      * @return address.AddressEntry object's city
      */
-    String getCity()
+    public String getCity()
     {
         return address.getCity();
     }
@@ -265,7 +265,7 @@ public class AddressEntry {
      * Returns an address.AddressEntry object's state.
      * @return address.AddressEntry object's state.
      */
-    String getState()
+    public String getState()
     {
         return address.getState();
     }
@@ -274,7 +274,7 @@ public class AddressEntry {
      * Returns an address.AddressEntry object's street.
      * @return address.AddressEntry object's street.
      */
-    String getStreet()
+    public String getStreet()
     {
         return address.getStreet();
     }
@@ -292,7 +292,7 @@ public class AddressEntry {
      * Returns an address.AddressEntry object's zip code as an integer.
      * @return address.AddressEntry object's zip code as an integer.
      */
-    Integer getZip()
+    public Integer getZip()
     {
         return address.getZip();
     }

@@ -16,7 +16,7 @@ import java.io.IOException;
  *   @version 1.0
  *   @since  March 2021
  *
- *   Purpose:
+ *   Purpose: Create GUI JFrame frame and display the AddressBookApplication GUI using AddressBookAppSwing class.
  *
  */
 public class AddressBookApplication {
@@ -75,7 +75,7 @@ public class AddressBookApplication {
     public static void  initAddressBookExercise(AddressBook ab){
         // Create 2 instances of AddressEntry
 
-        //AddressEntry instance 1
+        //AddressEntry instance entry1
         AddressEntry entry1 = new AddressEntry();
         entry1.setFirstName("Abe");
         entry1.setLastName("Lemon");
@@ -86,7 +86,7 @@ public class AddressBookApplication {
         entry1.setZip(90210);
         entry1.setEmail("abeL@gmail.com");
 
-        //AddressEntry instance 2
+        //AddressEntry instance entry2
         AddressEntry entry2 = new AddressEntry(ab.addressEntryList.size()+1,"Loola", "Bee", "Road Rd.", "Tracy", "CA",
         93678, "888-555-4444", "loo@hotmail.edu");
 
@@ -116,6 +116,7 @@ public class AddressBookApplication {
 //        Menu menu = new Menu();
 //        menu.showMenu(ab);
 
+        //Create JFrame from AddressBookAppSwing GUI
         JFrame frame = new JFrame("AddressBookAppSwing");
         frame.setContentPane(new AddressBookAppSwing().PanelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

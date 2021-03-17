@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -31,7 +32,7 @@ public class AddressBook {
      * AddressBook constructor
      */
     public AddressBook(){
-        addressEntryList = new ArrayList<AddressEntry>();
+        addressEntryList = new ArrayList<>();
     }
 
     /**
@@ -47,7 +48,7 @@ public class AddressBook {
 //        sortEntries();
 
         //counter to list number of entries
-        int x = 0;
+        int x=0;
 //        sortEntries();
         //Print every item in addressEntryList
         for(int i=0; i < this.addressEntryList.size(); i++){
@@ -64,7 +65,6 @@ public class AddressBook {
     public void sortEntries(){
         //temp to hold address entry for swap
         AddressEntry temp;
-        int tempIndex;
 
         //For every entry in list check if ordered alphabetically
         for(int i=0; i < this.addressEntryList.size(); i++){
@@ -75,20 +75,17 @@ public class AddressBook {
                 //swap entries at index i and j
                 if (this.addressEntryList.get(i).getName().getLastName().toLowerCase().compareTo(this.addressEntryList.get(j).getName().getLastName().toLowerCase())>0)
                 {
+                    //Swap
                     temp = this.addressEntryList.get(i);
-//                    System.out.println(temp.toString());
                     this.addressEntryList.set(i, this.addressEntryList.get(j));
-//                    addressEntryList.get(i).setID(j);
                     this.addressEntryList.set(j, temp);
-
-
                 }
             }
         }
 
+        //Set ID for all entries
         for(int i=0; i < this.addressEntryList.size(); i++) {
             this.addressEntryList.get(i).setID(i+1);
-//            System.out.println(this.addressEntryList.get(i).toString());
         }
     }
 
@@ -147,11 +144,14 @@ public class AddressBook {
      *
      * @param newEntry an AddressEntry instance
      */
-    void add(AddressEntry newEntry){
+    public void add(AddressEntry newEntry){
         //add new addressEntry object to addressEntryList
         newEntry.setID(addressEntryList.size()+1);
         addressEntryList.add(newEntry);
         sortEntries();
+
+        addDataBase(newEntry);
+
     }
 
 //READ FROM FILE START
@@ -200,14 +200,14 @@ public class AddressBook {
         }
     }
 
-//READ FROM FILE END
+
     /**
      * Searches addressEntryList to find if there are entry last names
      * that contain startof_lastName.
      * @param startof_lastName is the part of a last name that can be found in the arraylist.
      * @return boolean value indicating if value is found or not.
      */
-    boolean find(String startof_lastName){
+    public boolean find(String startof_lastName){
         //int foundIndex = 0;
         //Create new arraylist to store entries found
         // containing start_of_lastname
@@ -237,4 +237,261 @@ public class AddressBook {
         return flag;
     }
 
+    /**
+     * Reads the username and password to access database
+     * @param filename file containing the login information
+     * @return String[] login containing username at index 0 and password at index 1
+     */
+    String[] readLogin(String filename){
+
+        //try catch if filename not found
+        /**
+         * String array login
+         */
+        String [] login = new String[]{};
+
+        //try catch file input
+        try {
+            //Create new BufferedReader for filename
+            BufferedReader br = new BufferedReader(new FileReader(filename));
+            //Read a line in file
+            String line = br.readLine();
+
+
+            //Read until the end of the file
+            while (line != null) {
+                //Store line to a String data
+                String data = line;
+
+                //Store the line in an array (entry)
+                //split by comma
+                login = data.split(",");
+                line = br.readLine();
+            }
+            //Close file
+            br.close();
+
+
+        } catch(FileNotFoundException fe){
+            //Catch if file not found
+            System.out.println("File not found: " + filename);
+        } catch(IOException ioe){
+            //Catch if file not read properly
+            System.out.println("Can't read from file: " + filename);
+        }
+
+        //Return String array login[]
+        return login;
+    }
+
+    /**
+     * Access Oracle database
+     * Get username and password by reading separate file containing credentials
+     * Read in all database entries and create a new AddressEntry object
+     * Add the new AddressEntry object to the addressEntryList
+     */
+    public void readDataBase() {
+        //throws SQLException, ClassNotFoundException
+        try {
+            // Load the Oracle JDBC driver
+            Class.forName("oracle.jdbc.OracleDriver"); //name of driver may change w/ versions
+
+            //check Oracle documentation online
+            // Or could do DriverManager.registerDriver (new oracle.jdbc.OracleDriver());
+
+            String[] login = readLogin("src/oracleDatabase.txt");
+
+            //login[0] is username
+            //login[1] is password
+
+
+            // Connect to the database
+            // generic host url = jdbc:oracle:thin:login/password@host:port/SID for Oracle SEE Account INFO you
+            // were given by our CS tech in an email ---THIS WILL BE DIFFERENT
+            //jdbc:oracle:thin:@//adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu
+            Connection conn =
+                    DriverManager.getConnection("jdbc:oracle:thin:" + login[0] + "/" + login[1] + "@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
+
+            // Create a Statement
+            Statement stmt = conn.createStatement();
+
+
+            // Select the all (*) from the table JAVATEST
+
+            ResultSet rset = stmt.executeQuery("SELECT * FROM ADDRESSENTRYTABLE");
+
+//            System.out.println(rset);
+
+
+            //Variables to store database rows
+            int id = 0;
+            String name[] = new String[2];
+            String address[] = new String[3];
+            int zip = 0;
+            String phone = "";
+            String email = "";
+            // Iterate through the result and create a new AddressEntry object
+            while (rset.next()) //get next row of table returned
+
+            {
+                //Save COLUMN values ID==1 NAME==2 ADDRESS==3 EMAIL==4 PHONE==5
+                for (int i = 1; i <= rset.getMetaData().getColumnCount(); i++) { //visit each column
+
+                    if (i == 1) {
+                        id = Integer.parseInt(rset.getString(i));
+                    } else if (i == 2) {
+                        name = rset.getString(i).split(" ");
+                    } else if (i == 3) {
+                        address = rset.getString(i).split(", ");
+                    } else if (i == 4) {
+                        email = rset.getString(i);
+                    } else if (i == 5) {
+                        phone = rset.getString(i);
+                    } else {
+                    }
+
+                }
+                //Create new AddressEntry object
+                AddressEntry newEntry = new AddressEntry(id, name[0],
+                    name[1], address[0], address[1], address[2],
+                    Integer.parseInt(address[3]), phone, email);
+
+                //Add newEntry to addressEntryList
+                this.addressEntryList.add(newEntry);
+
+            }
+
+
+            //Close access to database
+            rset.close();
+
+            stmt.close();
+
+            conn.close();
+
+        }catch(SQLException se){
+            se.printStackTrace();
+        }
+        catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Access Oracle database
+     * Get username and password by reading separate file containing credentials
+     * Read in all database entries and create a new AddressEntry object
+     * Add the new AddressEntry object to the addressEntryList
+     * @param newEntry AddressEntry object to add to the database
+     */
+    void addDataBase(AddressEntry newEntry) {
+        //throws SQLException, ClassNotFoundException
+        try {
+            // Load the Oracle JDBC driver
+            Class.forName("oracle.jdbc.OracleDriver"); //name of driver may change w/ versions
+
+            //check Oracle documentation online
+            // Or could do DriverManager.registerDriver (new oracle.jdbc.OracleDriver());
+
+            String[] login = readLogin("src/oracleDatabase.txt");
+
+
+            // Connect to the database
+            // generic host url = jdbc:oracle:thin:login/password@host:port/SID for Oracle SEE Account INFO you
+            // were given by our CS tech in an email ---THIS WILL BE DIFFERENT
+            //jdbc:oracle:thin:@//adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu
+            Connection conn =
+                    DriverManager.getConnection("jdbc:oracle:thin:" + login[0] + "/" + login[1] + "@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
+
+            // Create a Prepared Statement sql
+            String sql = "INSERT INTO ADDRESSENTRYTABLE (ID, NAME, ADDRESS, EMAIL, PHONE ) VALUES (?, ?, ?, ?, ?)";
+
+            // Create a Prepared Statement st
+            PreparedStatement st = conn.prepareStatement(sql);
+            // Set column 1 ID
+            st.setInt(1, addressEntryList.size());
+
+            // Set column 2 NAME
+            st.setString(2, newEntry.getFirstName()+" "+newEntry.getLastName());
+
+            // Set column 3 ADDRESS
+            st.setString(3, newEntry.getCity()+", "+ newEntry.getStreet()
+                        + ", " + newEntry.getState() + ", " + newEntry.getZip());
+
+            // Set column 4 EMAIL
+            st.setString(4, newEntry.getEmail());
+
+            // Set column 5 PHONE
+            st.setString(5, newEntry.getPhone());
+
+            // Update database to add entry with PreparedStatement st
+            st.executeUpdate();
+
+            //Close access to st
+            st.close();
+            //Close access to connection
+            conn.close();
+
+        }catch(SQLException se){
+            se.printStackTrace();
+        }
+        catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Access database
+     * Remove a selected entry from the database.
+     * @param index Row to delete from the database
+     */
+    public void removeDataBase(String index) {
+        //throws SQLException, ClassNotFoundException
+        try {
+            // Load the Oracle JDBC driver
+            Class.forName("oracle.jdbc.OracleDriver"); //name of driver may change w/ versions
+
+            //check Oracle documentation online
+            // Or could do DriverManager.registerDriver (new oracle.jdbc.OracleDriver());
+
+            String[] login = readLogin("src/oracleDatabase.txt");
+
+
+            // Connect to the database
+            // generic host url = jdbc:oracle:thin:login/password@host:port/SID for Oracle SEE Account INFO you
+            // were given by our CS tech in an email ---THIS WILL BE DIFFERENT
+            //jdbc:oracle:thin:@//adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu
+            Connection conn =
+                    DriverManager.getConnection("jdbc:oracle:thin:" + login[0] + "/" + login[1] + "@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
+
+
+            // Delete index from the database
+            // String sql with variable index to deleted from ADDRESSENTRYTABLE
+            String sql = "DELETE FROM ADDRESSENTRYTABLE WHERE NAME = ?";
+
+            // PreparedStatement stmt from String sql
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            //Set string from selected index
+            stmt.setString(1, index);
+
+            // execute the preparedstatement
+            stmt.execute();
+
+
+            //Close access to st
+            stmt.close();
+            //Close access to connection
+            conn.close();
+
+        }catch(SQLException se){
+            se.printStackTrace();
+        }
+        catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
+
+    }
 }
