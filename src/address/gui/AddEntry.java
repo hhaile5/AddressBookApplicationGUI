@@ -4,6 +4,7 @@ import address.data.AddressEntry;
 import address.AddressBookApplication;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -252,7 +253,7 @@ public class AddEntry extends JFrame {
                 AddressBookAppSwing.addressEntryListModel.removeAllElements();
                 //Add sorted elements into addressEntryListModel
                 AddressBookAppSwing.addressEntryListModel.addAll(AddressBookAppSwing.book1.addressEntryList);
-//                AddressBookAppSwing.book1.list();
+
                 setVisible(false);
 
                 //Set text fields to empty when entry added
@@ -320,6 +321,15 @@ public class AddEntry extends JFrame {
 //        panel.setBackground(Color.PINK);
 //        frame2.setSize(300,300);
 
+        Border border = BorderFactory.createLineBorder(Color.BLUE, 2);
+
+        // set the border of this component
+//        firstNameText.setBorder(border);
+//        lastNameLabel.setBorder(border);
+//        panel.setBorder(border);
+//        addButton.setBorder(border);
+        panel.setBackground(Color.orange);
+
         //Add address entry form labels and text fields to panel
         panel.add(firstNameLabel);
         panel.add(firstNameText);
@@ -339,6 +349,11 @@ public class AddEntry extends JFrame {
         panel.add(emailText);
         panel.add(addButton);
         panel.add(addButton);
+
+
+        panel.setForeground(Color.pink);
+
+//        addButton.setBackground(Color.pink);
     }
 
     /**

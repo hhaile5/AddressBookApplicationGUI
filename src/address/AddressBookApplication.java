@@ -70,7 +70,7 @@ public class AddressBookApplication {
      * Creates two new address entries.
      * Adds the two entries to AddressBook ab.
      * Lists the contents of ab.
-     * @param ab
+     * @param ab AddressBook object ab
      */
     public static void  initAddressBookExercise(AddressBook ab){
         // Create 2 instances of AddressEntry
@@ -99,6 +99,10 @@ public class AddressBookApplication {
 
     }
 
+    /**
+     * Create a frame to display GUI
+     * @param args
+     */
     public static void main(String[] args) {
 //        JPanel PanelMain;
 

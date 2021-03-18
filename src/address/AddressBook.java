@@ -19,6 +19,7 @@ import java.util.Scanner;
  *  It has an ArrayList addressEntryList that contains all the entries.
  *  Entries can be added, removed, search/find with operations.
  *  Entries can be added from a file with the function readFromFile();
+ *  Entries can be read, added, and removed from a database
  */
 public class AddressBook {
 
@@ -42,10 +43,6 @@ public class AddressBook {
     public void list(){
         //iterate through addressEntryList
         //for each item call toString & print it out
-
-        //call sort() to sort addressEntryList
-        //alphabetically by lastname
-//        sortEntries();
 
         //counter to list number of entries
         int x=0;
@@ -208,10 +205,9 @@ public class AddressBook {
      * @return boolean value indicating if value is found or not.
      */
     public boolean find(String startof_lastName){
-        //int foundIndex = 0;
-        //Create new arraylist to store entries found
-        // containing start_of_lastname
-        //ArrayList<Integer> foundIndex = new ArrayList<Integer>();
+//        Create new arraylist to store entries found
+//         containing start_of_lastname
+        ArrayList<Integer> foundIndex = new ArrayList<Integer>();
 
         //flag indicates if start_of_lastname found in addressEntryList
         boolean flag = false;
@@ -221,7 +217,7 @@ public class AddressBook {
         for(int i=0; i < addressEntryList.size(); i++){
             //if entry contains start_of_lastName
             if(addressEntryList.get(i).getName().getLastName().toLowerCase().contains(startof_lastName.toLowerCase())){
-                //foundIndex.add(i);
+                foundIndex.add(i);
                 //Print out entry
                 System.out.println(addressEntryList.get(i).toString());
                 flag = true;
@@ -235,6 +231,40 @@ public class AddressBook {
         //return true if found
         //return false if not found
         return flag;
+    }
+
+    /**
+     * Searches addressEntryList to find if there are entry last names
+     * that contain startof_lastName.
+     * @param startof_lastName is the part of a last name that can be found in the arraylist.
+     * @return ArrayList foundEntry containing found entries
+     */
+    public ArrayList findGUI(String startof_lastName){
+            // Create new arraylist to store entries found
+            //containing start_of_lastname
+        ArrayList<AddressEntry> foundIndex = new ArrayList<AddressEntry>();
+
+        //flag indicates if start_of_lastname found in addressEntryList
+        boolean flag = false;
+
+        //Iterate through the list
+        //To find entries that contain start_of_lastName
+        for(int i=0; i < addressEntryList.size(); i++){
+            //if entry contains start_of_lastName
+            if(addressEntryList.get(i).getName().getLastName().toLowerCase().contains(startof_lastName.toLowerCase())){
+                foundIndex.add(addressEntryList.get(i));
+                //Print out entry
+                System.out.println(addressEntryList.get(i).toString());
+                flag = true;
+            }
+        }
+        if(flag == false){
+            //If start_of_lastName is not found in addressEntryList
+            System.out.println("No entries found.");
+        }
+
+        //return ArrayList of all entries found
+        return foundIndex;
     }
 
     /**
@@ -325,8 +355,8 @@ public class AddressBook {
 
             //Variables to store database rows
             int id = 0;
-            String name[] = new String[2];
-            String address[] = new String[3];
+            String[] name = new String[2];
+            String[] address = new String[3];
             int zip = 0;
             String phone = "";
             String email = "";
@@ -407,10 +437,25 @@ public class AddressBook {
             // Create a Prepared Statement sql
             String sql = "INSERT INTO ADDRESSENTRYTABLE (ID, NAME, ADDRESS, EMAIL, PHONE ) VALUES (?, ?, ?, ?, ?)";
 
+            Statement stmt = conn.createStatement();
+            String query = ("SELECT * FROM ADDRESSENTRYTABLE WHERE ID=(SELECT max(ID) FROM ADDRESSENTRYTABLE)");
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+
             // Create a Prepared Statement st
             PreparedStatement st = conn.prepareStatement(sql);
-            // Set column 1 ID
-            st.setInt(1, addressEntryList.size());
+
+            int i = 0;
+            if(rs.getInt(1) == addressEntryList.size()){
+                while(rs.getInt(1) == addressEntryList.size()+i){
+                    i++;
+
+                }
+                st.setInt(1, addressEntryList.size()+i);
+            }
+            else{
+                st.setInt(1, addressEntryList.size());
+            }
 
             // Set column 2 NAME
             st.setString(2, newEntry.getFirstName()+" "+newEntry.getLastName());
@@ -427,6 +472,9 @@ public class AddressBook {
 
             // Update database to add entry with PreparedStatement st
             st.executeUpdate();
+
+            stmt.close();
+            rs.close();
 
             //Close access to st
             st.close();
@@ -494,4 +542,5 @@ public class AddressBook {
         }
 
     }
+
 }
